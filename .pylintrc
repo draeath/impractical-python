@@ -1,0 +1,6 @@
+# you need to symlink this into to each directory you'll be linting
+
+# C0301 = line too long
+
+[FORMAT]
+disable=C0301

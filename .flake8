@@ -1,0 +1,6 @@
+# you do not need to symlink this, flake8 is smart and understands subdirectories
+
+# E501 = line too long
+
+[flake8]
+ignore=E501
