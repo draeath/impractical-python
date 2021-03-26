@@ -26,7 +26,7 @@ def __is_invalid_word(word: str, pattern: str = r'^[a-zA-Z]+$', minimum_length: 
     return False
 
 
-def get_words(filename: str = 'words'):
+def get_words(filename: str):
     """Return a sorted and (somewhat) filtered wordlist from filename. The result is cached."""
     filename_b64 = base64.urlsafe_b64encode(filename.encode()).decode()
     cache_filename = '.get_words__' + filename_b64
