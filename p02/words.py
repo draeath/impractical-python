@@ -29,9 +29,8 @@ def __is_invalid_word(word: str, minimum_length: int = 2):
 
 def get_words(filename: str):
     """Return a sorted and (somewhat) filtered wordlist from filename. The result is cached."""
-    node_uuid = uuid.UUID(int=uuid.getnode()).bytes
-    filename_hashed = hashlib.blake2b(filename.encode(encoding='utf8'), digest_size=32, key=node_uuid)
-    cache_filename = '.get_words__' + filename_hashed.hexdigest()
+    cache_filename = '.get_words__' + hashlib.blake2b(filename.encode(encoding='utf8'), digest_size=32,
+                                                      key=uuid.UUID(int=uuid.getnode()).bytes).hexdigest()
     try:
         if os.path.getmtime(cache_filename) <= os.path.getmtime(filename):
             raise DataOutdatedError
