@@ -50,5 +50,5 @@ def get_words(filename: str):
                 return_words.add(line.lower())
         with lzma.open(cache_filename, mode='wt', encoding='utf8',
                        format=lzma.FORMAT_XZ, check=lzma.CHECK_SHA256, preset=lzma.PRESET_EXTREME) as file:
-            json.dump(sorted(return_words), file)
+            json.dump(list(return_words), file)
     return return_words
