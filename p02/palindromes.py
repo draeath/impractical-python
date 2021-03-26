@@ -6,12 +6,11 @@ import typing
 import words
 
 
-def get_palindromes(word_list: typing.List[str]):
+def get_palindromes(word_list: typing.Set[str]):
     palindromes = set()
     for word in word_list:
         if len(word) > 1 and word == word[::-1]:
             palindromes.add(word)
-    palindromes = sorted(palindromes)
     return palindromes
 
 

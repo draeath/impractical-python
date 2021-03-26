@@ -28,14 +28,14 @@ def __is_invalid_word(word: str, minimum_length: int = 2):
 
 
 def get_words(filename: str):
-    """Return a sorted and (somewhat) filtered wordlist from filename. The result is cached."""
+    """Return a set of (somewhat) filtered wordlist from filename. The result is cached."""
     cache_filename = '.get_words__' + hashlib.blake2b(filename.encode(encoding='utf8'), digest_size=32,
                                                       key=uuid.UUID(int=uuid.getnode()).bytes).hexdigest()
     try:
         if os.path.getmtime(cache_filename) <= os.path.getmtime(filename):
             raise DataOutdatedError
         with lzma.open(cache_filename, mode='rt', encoding='utf8') as file:
-            return_words = json.load(file)
+            return_words = set(json.load(file))
     except (json.JSONDecodeError, lzma.LZMAError, EOFError, FileNotFoundError, PermissionError, DataOutdatedError):
         with open(filename) as file:
             return_words = set()
@@ -48,8 +48,7 @@ def get_words(filename: str):
                     else:
                         line = word_suffix_match.group(1)
                 return_words.add(line.lower())
-        return_words = sorted(return_words)
         with lzma.open(cache_filename, mode='wt', encoding='utf8',
                        format=lzma.FORMAT_XZ, check=lzma.CHECK_SHA256, preset=lzma.PRESET_EXTREME) as file:
-            json.dump(return_words, file)
+            json.dump(sorted(return_words), file)
     return return_words
