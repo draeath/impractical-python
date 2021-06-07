@@ -6,6 +6,7 @@ import pickle
 import os.path
 import uuid
 import hashlib
+import tempfile
 
 
 class DataOutdatedError(Exception):
@@ -29,8 +30,10 @@ def __is_invalid_word(word: str, minimum_length: int = 2):
 
 def get_words(filename: str):
     """Return a set of (somewhat) filtered wordlist from filename. The result is cached."""
-    cache_filename = '.get_words__' + hashlib.blake2b(filename.encode(encoding='utf8'), digest_size=32,
-                                                      key=uuid.UUID(int=uuid.getnode()).bytes).hexdigest()
+    cache_node_uuid = uuid.UUID(int=uuid.getnode()).bytes
+    cache_hash_input = "words.py|get_words|" + filename
+    cache_filename_hash = hashlib.blake2b(cache_hash_input.encode(encoding='utf8'), digest_size=32, key=cache_node_uuid)
+    cache_filename = os.path.join(tempfile.gettempdir(), '.' + cache_filename_hash.hexdigest() + '.cache')
     try:
         if os.path.getmtime(cache_filename) <= os.path.getmtime(filename):
             raise DataOutdatedError
