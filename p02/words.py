@@ -28,14 +28,14 @@ def __is_invalid_word(word: str, minimum_length: int = 2):
     return False
 
 
-def get_words(filename: str):
+def get_words(filename: str, no_cache: bool = False):
     """Return a set of (somewhat) filtered wordlist from filename. The result is cached."""
     cache_node_uuid = uuid.UUID(int=uuid.getnode()).bytes
     cache_hash_input = "words.py|get_words|" + filename
     cache_filename_hash = hashlib.blake2b(cache_hash_input.encode(encoding='utf8'), digest_size=32, key=cache_node_uuid)
     cache_filename = os.path.join(tempfile.gettempdir(), '.' + cache_filename_hash.hexdigest() + '.cache')
     try:
-        if os.path.getmtime(cache_filename) <= os.path.getmtime(filename):
+        if no_cache or (os.path.getmtime(cache_filename) <= os.path.getmtime(filename)):
             raise DataOutdatedError
         with lzma.open(cache_filename, mode='rb') as file:
             return_words = pickle.load(file)
@@ -51,6 +51,7 @@ def get_words(filename: str):
                     else:
                         line = word_suffix_match.group(1)
                 return_words.add(line.lower())
-        with lzma.open(cache_filename, mode='wb', format=lzma.FORMAT_XZ, check=lzma.CHECK_SHA256, preset=lzma.PRESET_EXTREME) as file:
-            pickle.dump(return_words, file)
+        if not no_cache:
+            with lzma.open(cache_filename, mode='wb', format=lzma.FORMAT_XZ, check=lzma.CHECK_SHA256, preset=lzma.PRESET_EXTREME) as file:
+                pickle.dump(return_words, file)
     return return_words
