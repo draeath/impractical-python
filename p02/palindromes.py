@@ -15,10 +15,17 @@ def get_palindromes(word_list: typing.Set[str]):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Find palindromes!',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--wordlist', type=str, default='../third-party/12dicts-6.0.2/International/3of6game.txt', required=False,
-                        help='Path to plaintext file with one word per line.')
+    parser = argparse.ArgumentParser(
+        description="Find palindromes!",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--wordlist",
+        type=str,
+        default="../third-party/12dicts-6.0.2/International/3of6game.txt",
+        required=False,
+        help="Path to plaintext file with one word per line.",
+    )
     args = parser.parse_args()
     word_list = words.get_words(args.wordlist)
     palindrome_list = get_palindromes(word_list)
